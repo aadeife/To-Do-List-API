@@ -1,6 +1,5 @@
 import sqlite3
 
-
 sql_statements = [
     """CREATE TABLE IF NOT EXISTS users (
             user_id INTEGER PRIMARY KEY,
@@ -40,3 +39,11 @@ try:
         
 except sqlite3.OperationalError as e:
     print("Failed to connect to database:", e)
+
+def get_db():
+    conn = sqlite3.connect("to-do.db")
+    conn.row_factory = sqlite3.Row  # lets you access columns by name instead of index
+    try:
+        yield conn
+    finally:
+        conn.close()
