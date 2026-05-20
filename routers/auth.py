@@ -4,6 +4,8 @@ import sqlite3
 from db import connection
 from pwdlib import PasswordHash
 from jose import jwt
+from dependencies import SECRET_KEY
+from datetime import datetime, timedelta, timezone
 
 router = APIRouter()
 password_hash = PasswordHash.recommended()
@@ -41,7 +43,11 @@ def user_registration(user: UserCreate, db = Depends(connection.get_db)):
     except sqlite3.OperationalError as e:
         raise HTTPException(status_code=500, detail="Database error")
     
-    token = jwt.encode(a{"user_id": user_id}, 'secret', algorithm='HS256')
+    token = jwt.encode({
+        "user_id": user_id,
+        "exp": datetime.now(timezone.utc) + timedelta(hours=24)},
+        SECRET_KEY, algorithm='HS256'
+        )
 
     return TokenResponse(token=token)
 
@@ -72,7 +78,11 @@ def user_login(user: UserLogin, db = Depends(connection.get_db)):
     if not password_hash.verify(user.password, real_pwd):
         raise HTTPException(status_code=401, detail="Incorrect email or password.")
     
-    token = jwt.encode({"user_id": user_id}, 'secret', algorithm='HS256')
+    token = jwt.encode({
+        "user_id": user_id,
+        "exp": datetime.now(timezone.utc) + timedelta(hours=24)},
+        SECRET_KEY, algorithm='HS256'
+        )
 
     return TokenResponse(token=token)
     

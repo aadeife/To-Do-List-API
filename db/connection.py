@@ -43,6 +43,7 @@ except sqlite3.OperationalError as e:
 def get_db():
     conn = sqlite3.connect("to-do.db")
     conn.row_factory = sqlite3.Row  # lets you access columns by name instead of index
+    conn.execute("PRAGMA foreign_keys = ON")
     try:
         yield conn
     finally:

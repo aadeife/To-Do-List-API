@@ -3,7 +3,7 @@ from models import UserCreate, UserResponse, UserUpdate
 import sqlite3
 from db import connection
 
-router = APIRouter()
+router = APIRouter(prefix="/users")
 
 @router.get("/{user_id}")
 def get_user(user_id: int, db = Depends(connection.get_db)):

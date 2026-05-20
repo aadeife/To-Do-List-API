@@ -73,7 +73,7 @@ def get_item(item_id: int, current_user = Depends(get_current_user), db = Depend
         raise HTTPException(status_code=404, detail="Item not found")
     
     if existing_item["user_id"] != current_user:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+        raise HTTPException(status_code=403, detail="Forbidden")
     
     return ItemResponse(
         item_id=existing_item["item_id"],
@@ -149,7 +149,7 @@ def update_item(item_id: int, item: ItemUpdate, current_user = Depends(get_curre
         raise HTTPException(status_code=404, detail="Item not found")
     
     if existing_item["user_id"] != current_user:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+        raise HTTPException(status_code=403, detail="Forbidden")
  
     try:
         cursor.execute(
@@ -196,7 +196,7 @@ def delete_item(item_id: int, current_user = Depends(get_current_user), db = Dep
         raise HTTPException(status_code=404, detail="Item not found")
     
     if current_user != existing_item["user_id"]:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+        raise HTTPException(status_code=403, detail="Forbidden")
     
     try:
         cursor.execute(
