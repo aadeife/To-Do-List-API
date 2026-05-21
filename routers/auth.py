@@ -29,8 +29,9 @@ def user_registration(user: UserCreate, db = Depends(connection.get_db)):
     except sqlite3.OperationalError as e:
         raise HTTPException(status_code=500, detail="Database error")
     
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already exists.")
+    if existing_user is not None:
+        if existing_user["email"] == user.email:
+            raise HTTPException(status_code=400, detail="Email already exists.")
     
     try:
         #hash and add user to db
